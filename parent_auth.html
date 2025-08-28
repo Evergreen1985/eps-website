@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Portal - Evergreen Preschool & Daycare</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .auth-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 450px;
+            width: 100%;
+            margin: 20px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .auth-header h2 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .auth-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .auth-toggle {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 5px;
+            margin-top: 20px;
+        }
+
+        .auth-toggle button {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .auth-toggle button.active {
+            background: white;
+            color: var(--primary-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-form {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .otp-group {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .otp-info {
+            background: #e8f5e8;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--primary-dark);
+        }
+
+        .otp-info i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        .resend-otp {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .resend-otp:hover {
+            color: var(--primary-dark);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .auth-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-btn .loading {
+            display: none;
+        }
+
+        .auth-btn.loading .loading {
+            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+
+        .auth-btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .auth-footer {
+            text-align: center;
+            padding: 0 30px 30px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .success-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .signup-form {
+            display: none;
+        }
+
+        .signup-form.active,
+        .signin-form.active {
+            display: block;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            margin-top: 4px;
+        }
+
+        .terms-checkbox label {
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 480px) {
+            .auth-card {
+                margin: 10px;
+                border-radius: 10px;
+            }
+
+            .auth-header {
+                padding: 25px 20px;
+            }
+
+            .auth-form {
+                padding: 30px 20px;
+            }
+
+            .auth-footer {
+                padding: 0 20px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <h1>Evergreen Preschool & Daycare</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="programs.html">Programs</a></li>
+                    <li><a href="daycare.html">Daycare</a></li>
+                    <li><a href="community.html">Community</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <section class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Parent Portal</h2>
+                <p>Access your child's progress, updates, and communicate with teachers</p>
+                
+                <div class="auth-toggle">
+                    <button type="button" id="signinTab" class="active">Sign In</button>
+                    <button type="button" id="signupTab">Sign Up</button>
+                </div>
+            </div>
+
+            <!-- Sign In Form -->
+            <div class="signin-form active" id="signinForm">
+                <div class="auth-form">
+                    <div class="success-message" id="signinSuccess"></div>
+                    
+                    <form id="signinFormElement">
+                        <div class="form-group">
+                            <label for="signinMobile">Mobile Number</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-mobile-alt"></i>
+                                <input type="tel" id="signinMobile" name="mobile" placeholder="Enter your 10-digit mobile number" maxlength="10" pattern="[0-9]{10}">
+                            </div>
+                            <div class="error-message" id="signinMobileError"></div>
+                        </div>
+
+                        <div class="otp-group" id="signinOtpGroup">
+                            <div class="otp-info">
+                                <i class="fas fa-info-circle"></i>
+                                We've sent a 6-digit OTP to your mobile number. Please enter it below.
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="signinOtp">Enter OTP</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-key"></i>
+                                    <input type="text" id="signinOtp" name="otp" placeholder="Enter 6-digit OTP" maxlength="6" pattern="[0-9]{6}">
+                                </div>
+                                <div class="error-message" id="signinOtpError"></div>
+                                <button type="button" class="resend-otp" id="resendSigninOtp">Didn't receive OTP? Resend</button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="auth-btn" id="signinBtn">
+                            <span class="btn-text">Send OTP</span>
+                            <i class="fas fa-spinner loading"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-footer">
+                    <p>New parent? <a href="#" id="switchToSignup">Create an account</a></p>
+                    <p><a href="contact.html">Need help? Contact us</a></p>
+                </div>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div class="signup-form" id="signupForm">
+                <div class="auth-form">
+                    <div class="success-message" id="signupSuccess"></div>
+                    
+                    <form id="signupFormElement">
+                        <div class="form-group">
+                            <label for="parentName">Parent/Guardian Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="parentName" name="parentName" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="error-message" id="parentNameError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="childName">Child's Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-child"></i>
+                                <input type="text" id="childName" name="childName" placeholder="Enter your child's name" required>
+                            </div>
+                            <div class="error-message" id="childNameError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupMobile">Mobile Number</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-mobile-alt"></i>
+                                <input type="tel" id="signupMobile" name="mobile" placeholder="Enter your 10-digit mobile number" maxlength="10" pattern="[0-9]{10}" required>
+                            </div>
+                            <div class="error-message" id="signupMobileError"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                            </div>
+                            <div class="error-message" id="emailError"></div>
+                        </div>
+
+                        <div class="otp-group" id="signupOtpGroup">
+                            <div class="otp-info">
+                                <i class="fas fa-info-circle"></i>
+                                We've sent a 6-digit OTP to your mobile number. Please enter it below to complete registration.
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="signupOtp">Enter OTP</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-key"></i>
+                                    <input type="text" id="signupOtp" name="otp" placeholder="Enter 6-digit OTP" maxlength="6" pattern="[0-9]{6}">
+                                </div>
+                                <div class="error-message" id="signupOtpError"></div>
+                                <button type="button" class="resend-otp" id="resendSignupOtp">Didn't receive OTP? Resend</button>
+                            </div>
+                        </div>
+
+                        <div class="terms-checkbox">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></label>
+                        </div>
+
+                        <button type="submit" class="auth-btn" id="signupBtn">
+                            <span class="btn-text">Create Account</span>
+                            <i class="fas fa-spinner loading"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="#" id="switchToSignin">Sign in here</a></p>
+                    <p><a href="contact.html">Need help? Contact us</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>Evergreen Preschool & Daycare</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 1427, 13th Cross Rd, Ananth Nagar Phase 2, Shree Ananth Nagar Layout, Kammasandra, Electronic City, Bengaluru, Karnataka 560100</p>
+                    <p><i class="fas fa-phone"></i> 74------04</p>
+                    <p><i class="fas fa-envelope"></i> info@evergreenpreschool.com</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="programs.html">Programs</a></li>
+                        <li><a href="daycare.html">Daycare</a></li>
+                        <li><a href="community.html">Community</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-hours">
+                    <h3>Hours of Operation</h3>
+                    <p>Monday - Friday: 7:00 AM - 7:00 PM</p>
+                    <p>Saturday: 8:00 AM - 1:00 PM</p>
+                    <p>Sunday: Closed</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 Evergreen Preschool and Daycare. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Authentication state management
+        let currentStep = 'mobile'; // 'mobile' or 'otp'
+        let currentMode = 'signin'; // 'signin' or 'signup'
+
+        // DOM Elements
+        const signinTab = document.getElementById('signinTab');
+        const signupTab = document.getElementById('signupTab');
+        const signinForm = document.getElementById('signinForm');
+        const signupForm = document.getElementById('signupForm');
+        const switchToSignup = document.getElementById('switchToSignup');
+        const switchToSignin = document.getElementById('switchToSignin');
+
+        // Form elements
+        const signinFormElement = document.getElementById('signinFormElement');
+        const signupFormElement = document.getElementById('signupFormElement');
+
+        // Tab switching functionality
+        signinTab.addEventListener('click', () => switchTab('signin'));
+        signupTab.addEventListener('click', () => switchTab('signin'));
+        switchToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchTab('signup');
+        });
+        switchToSignin.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchTab('signin');
+        });
+
+        function switchTab(mode) {
+            currentMode = mode;
+            currentStep = 'mobile';
+            
+            if (mode === 'signin') {
+                signinTab.classList.add('active');
+                signupTab.classList.remove('active');
+                signinForm.classList.add('active');
+                signupForm.classList.remove('active');
+                resetForm('signin');
+            } else {
+                signupTab.classList.add('active');
+                signinTab.classList.remove('active');
+                signupForm.classList.add('active');
+                signinForm.classList.remove('active');
+                resetForm('signup');
+            }
+        }
+
+        // Form validation functions
+        function validateMobile(mobile) {
+            const mobilePattern = /^[6-9]\d{9}$/;
+            return mobilePattern.test(mobile);
+        }
+
+        function validateEmail(email) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        }
+
+        function validateOTP(otp) {
+            return /^\d{6}$/.test(otp);
+        }
+
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.add('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function clearError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(fieldId + 'Error');
+            
+            field.classList.remove('error');
+            errorElement.style.display = 'none';
+        }
+
+        function clearAllErrors(formType) {
+            const prefix = formType === 'signin' ? 'signin' : 'signup';
+            const fields = formType === 'signin' 
+                ? ['signinMobile', 'signinOtp']
+                : ['parentName', 'childName', 'signupMobile', 'email', 'signupOtp'];
+            
+            fields.forEach(field => clearError(field));
+        }
+
+        // OTP simulation functions
+        function generateOTP() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        function simulateOTPSend(mobile, callback) {
+            // Simulate API call delay
+            setTimeout(() => {
+                const otp = generateOTP();
+                console.log(`OTP sent to ${mobile}: ${otp}`); // In real app, this would be sent via SMS
+                // Store OTP for verification (in real app, this would be on server)
+                sessionStorage.setItem('currentOTP', otp);
+                sessionStorage.setItem('otpMobile', mobile);
+                callback(true);
+            }, 1500);
+        }
+
+        function verifyOTP(enteredOTP) {
+            const storedOTP = sessionStorage.getItem('currentOTP');
+            return enteredOTP === storedOTP;
+        }
+
+        // Form submission handlers
+        signinFormElement.addEventListener('submit', handleSigninSubmit);
+        signupFormElement.addEventListener('submit', handleSignupSubmit);
+
+        function handleSigninSubmit(e) {
+            e.preventDefault();
+            clearAllErrors('signin');
+
+            const mobile = document.getElementById('signinMobile').value;
+            const otp = document.getElementById('signinOtp').value;
+            const btn = document.getElementById('signinBtn');
+
+            if (currentStep === 'mobile') {
+                // Validate mobile number
+                if (!validateMobile(mobile)) {
+                    showError('signinMobile', 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9');
+                    return;
+                }
+
+                // Show loading state
+                btn.classList.add('loading');
+                btn.disabled = true;
+
+                // Simulate OTP sending
+                simulateOTPSend(mobile, (success) => {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+
+                    if (success) {
+                        currentStep = 'otp';
+                        document.getElementById('signinOtpGroup').style.display = 'block';
+                        document.getElementById('signinBtn').innerHTML = '<span class="btn-text">Verify & Sign In</span><i class="fas fa-spinner loading"></i>';
+                        document.getElementById('signinMobile').disabled = true;
+                    } else {
+                        showError('signinMobile', 'Failed to send OTP. Please try again.');
+                    }
+                });
+            } else if (currentStep === 'otp') {
+                // Validate OTP
+                if (!validateOTP(otp)) {
+                    showError('signinOtp', 'Please enter a valid 6-digit OTP');
+                    return;
+                }
+
+                // Show loading state
+                btn.classList.add('loading');
+                btn.disabled = true;
+
+                // Simulate OTP verification
+                setTimeout(() => {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+
+                    if (verifyOTP(otp)) {
+                        // Success - redirect to dashboard
+                        document.getElementById('signinSuccess').innerHTML = '<i class="fas fa-check-circle"></i> Sign in successful! Redirecting to dashboard...';
+                        document.getElementById('signinSuccess').style.display = 'block';
+                        
+                        setTimeout(() => {
+                            // In a real app, redirect to parent dashboard
+                            alert('Sign in successful! This would redirect to the parent dashboard.');
+                        }, 1500);
+                    } else {
+                        showError('signinOtp', 'Invalid OTP. Please check and try again.');
+                    }
+                }, 1000);
+            }
+        }
+
+        function handleSignupSubmit(e) {
+            e.preventDefault();
+            clearAllErrors('signup');
+
+            const parentName = document.getElementById('parentName').value.trim();
+            const childName = document.getElementById('childName').value.trim();
+            const mobile = document.getElementById('signupMobile').value;
+            const email = document.getElementById('email').value.trim();
+            const otp = document.getElementById('signupOtp').value;
+            const terms = document.getElementById('terms').checked;
+            const btn = document.getElementById('signupBtn');
+
+            if (currentStep === 'mobile') {
+                let hasErrors = false;
+
+                // Validate all fields
+                if (!parentName) {
+                    showError('parentName', 'Parent name is required');
+                    hasErrors = true;
+                }
+
+                if (!childName) {
+                    showError('childName', 'Child name is required');
+                    hasErrors = true;
+                }
+
+                if (!validateMobile(mobile)) {
+                    showError('signupMobile', 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9');
+                    hasErrors = true;
+                }
+
+                if (!validateEmail(email)) {
+                    showError('email', 'Please enter a valid email address');
+                    hasErrors = true;
+                }
+
+                if (!terms) {
+                    alert('Please accept the terms of service and privacy policy');
+                    hasErrors = true;
+                }
+
+                if (hasErrors) return;
+
+                // Show loading state
+                btn.classList.add('loading');
+                btn.disabled = true;
+
+                // Simulate OTP sending
+                simulateOTPSend(mobile, (success) => {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+
+                    if (success) {
+                        currentStep = 'otp';
+                        document.getElementById('signupOtpGroup').style.display = 'block';
+                        document.getElementById('signupBtn').innerHTML = '<span class="btn-text">Verify & Complete Registration</span><i class="fas fa-spinner loading"></i>';
+                        
+                        // Disable form fields
+                        document.getElementById('parentName').disabled = true;
+                        document.getElementById('childName').disabled = true;
+                        document.getElementById('signupMobile').disabled = true;
+                        document.getElementById('email').disabled = true;
+                        document.getElementById('terms').disabled = true;
+                    } else {
+                        showError('signupMobile', 'Failed to send OTP. Please try again.');
+                    }
+                });
+            } else if (currentStep === 'otp') {
+                // Validate OTP
+                if (!validateOTP(otp)) {
+                    showError('signupOtp', 'Please enter a valid 6-digit OTP');
+                    return;
+                }
+
+                // Show loading state
+                btn.classList.add('loading');
+                btn.disabled = true;
+
+                // Simulate account creation
+                setTimeout(() => {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+
+                    if (verifyOTP(otp)) {
+                        // Success - show success message
+                        document.getElementById('signupSuccess').innerHTML = '<i class="fas fa-check-circle"></i> Account created successfully! You can now sign in to access the parent portal.';
+                        document.getElementById('signupSuccess').style.display = 'block';
+                        
+                        setTimeout(() => {
+                            // Switch to signin form
+                            switchTab('signin');
+                        }, 2000);
+                    } else {
+                        showError('signupOtp', 'Invalid OTP. Please check and try again.');
+                    }
+                }, 1000);
+            }
+        }
+
+        // Resend OTP functionality
+        document.getElementById('resendSigninOtp').addEventListener('click', function() {
+            const mobile = document.getElementById('signinMobile').value;
+            if (mobile) {
+                this.disabled = true;
+                this.textContent = 'Sending...';
+                
+                simulateOTPSend(mobile, (success) => {
+                    this.disabled = false;
+                    this.textContent = 'OTP sent! Resend in 30s';
+                    
+                    setTimeout(() => {
+                        this.textContent = "Didn't receive OTP? Resend";
+                    }, 30000);
+                });
+            }
+        });
+
+        document.getElementById('resendSignupOtp').addEventListener('click', function() {
+            const mobile = document.getElementById('signupMobile').value;
+            if (mobile) {
+                this.disabled = true;
+                this.textContent = 'Sending...';
+                
+                simulateOTPSend(mobile, (success) => {
+                    this.disabled = false;
+                    this.textContent = 'OTP sent! Resend in 30s';
+                    
+                    setTimeout(() => {
+                        this.textContent = "Didn't receive OTP? Resend";
+                    }, 30000);
+                });
+            }
+        });
+
+        function resetForm(type) {
+            currentStep = 'mobile';
+            
+            if (type === 'signin') {
+                document.getElementById('signinFormElement').reset();
+                document.getElementById('signinOtpGroup').style.display = 'none';
+                document.getElementById('signinBtn').innerHTML = '<span class="btn-text">Send OTP</span><i class="fas fa-spinner loading"></i>';
+                document.getElementById('signinMobile').disabled = false;
+                document.getElementById('signinSuccess').style.display = 'none';
+                clearAllErrors('signin');
+            } else {
+                document.getElementById('signupFormElement').reset();
+                document.getElementById('signupOtpGroup').style.display = 'none';
+                document.getElementById('signupBtn').innerHTML = '<span class="btn-text">Create Account</span><i class="fas fa-spinner loading"></i>';
+                document.getElementById('parentName').
